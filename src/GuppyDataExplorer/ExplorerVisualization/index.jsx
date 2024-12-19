@@ -13,8 +13,11 @@ import ReduxExplorerButtonGroup from '../ExplorerButtonGroup/ReduxExplorerButton
 import SummaryBoxplotChart from './SummaryBoxPlotChart';
 import StackedLineChart from './StackedLineChart';
 // import RadarChart from './RadarChart';
-import { MyResponsiveSankey } from './SankeyDiagram'
-import { MolecularTestTab } from './MolecularTestTab'
+// import { MyResponsiveSankey } from './SankeyDiagram';
+import { MolecularTestTab } from './MolecularTestTab';
+import SurvivalCurve from './KaplanSurvivalCurve';
+import FilteredSurvivalCurve from './FilteredSurvivalCurve';
+import GroupedSurvivalCurve from './GroupedSurvivalCurve';
 
 import {
   TableConfigType,
@@ -26,6 +29,7 @@ import { checkForAnySelectedUnaccessibleField } from '../GuppyDataExplorerHelper
 import './ExplorerVisualization.css';
 import { labelToPlural } from '../utils';
 
+
 class ExplorerVisualization extends React.Component {
   constructor(props) {
     super(props);
@@ -33,6 +37,7 @@ class ExplorerVisualization extends React.Component {
   }
 
   getData = (aggsData, chartConfig, filter) => {
+    // console.log(aggsData, filter)
     const summaries = [];
     let countItems = [];
     const stackedBarCharts = [];
@@ -176,34 +181,6 @@ class ExplorerVisualization extends React.Component {
               {this.props.guppyConfig.type == "follow_up" &&
                 <div className="summary-chart-group" style={{height:'fit-content', minHeight:400}}>
                   <SummaryBoxplotChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="bmi"
-                        title='BMI Clinical Trial'
-                        category="case_arm"
-                    />
-                  <StackedLineChart
-                      casecount={chartData.countItems[0].value}
-                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
-                      attribute="bmi"
-                      title="BMI Clinical Trial"
-                      category="case_arm"
-                  />
-                  <SummaryBoxplotChart
-                        casecount={chartData.countItems[0].value}
-                        fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
-                        attribute="bmi"
-                        category="case_group"
-                        title="BMI Observational Study"
-                    />
-                  <StackedLineChart
-                      casecount={chartData.countItems[0].value}
-                      fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
-                      attribute="bmi"
-                      title="BMI Observational Study"
-                      category="case_group"
-                  />
-                  <SummaryBoxplotChart
                     casecount={chartData.countItems[0].value}
                     fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
                     attribute="meld_score"
@@ -217,6 +194,23 @@ class ExplorerVisualization extends React.Component {
                       category="case_arm"
                       title="MELD Score Clinical Trial"
                  />
+                 {/*  Kaplan Survival Curve*/}
+                  <SurvivalCurve
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    casecount={chartData.countItems[0].value}
+                  />
+
+                  {/* <FilteredSurvivalCurve
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    casecount={chartData.countItems[0].value}
+                  /> */}
+
+                  <GroupedSurvivalCurve
+                    fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}
+                    casecount={chartData.countItems[0].value}
+                    guppyConfig={this.props.guppyConfig}
+                  />
+
                  <SummaryBoxplotChart
                         casecount={chartData.countItems[0].value}
                         title={"MELD Score Observation Study"}
@@ -224,7 +218,7 @@ class ExplorerVisualization extends React.Component {
                         attribute="meld_score"
                         category="case_group"
                     />
-                    <StackedLineChart
+                  <StackedLineChart
                         casecount={chartData.countItems[0].value}
                         fetchAndUpdateRawData={this.props.fetchAndUpdateRawData}  
                         attribute="meld_score"
